@@ -1,0 +1,81 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5vw;
+    align-items: center;
+    background-image: url(../img/fon.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    color: #ffffff;
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+}
+
+.gameField {
+    display: flex;
+    justify-content: center
+}
+
+.indexation {
+    height: 51px;
+    width: 51px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3vw;
+}
+
+.leftNum {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+.horizontal {
+    display: flex;
+    justify-content: center
+}
+
+.black {
+    background-color: #545353;
+    height: 50px;
+    width: 50px;
+}
+
+.white {
+    background-color: #ffffff;
+    height: 50px;
+    width: 50px;
+}
+
+.blackChecker {
+    background: url(../img/BlackChecker.png) center center /cover, #545353;
+}
+
+.blackQueen {
+    background: url(../img/BlackChecker+.png) center center /cover, #545353;
+}
+
+.whiteChecker {
+    background: url(../img/WhiteChecker.png) center center /cover, #545353;
+}
+
+.whiteQueen {
+    background: url(../img/WhiteChecker+.png) center center /cover, #545353;
+}
+
+.yes {
+    outline: 5px solid rgb(255, 0, 0);
+    outline-offset: -5px;
+}
