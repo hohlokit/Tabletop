@@ -6,6 +6,7 @@ class Checkers extends React.Component {
         this.createField();
     }
     createField = () => {
+
         let fieldRow = [];
         let fieldArr = [];
         let id = 1;
@@ -25,11 +26,11 @@ class Checkers extends React.Component {
                 else {
                     cell.color = false;
                     if (i < 3) {
-                        cell.checkerType = 'blackChecker';
+                        cell.checkerType = 'blackQueen';
                         cell.checkerColor = true;
                     }
                     if (i > 4) {
-                        cell.checkerType = 'whiteChecker';
+                        cell.checkerType = 'whiteQueen';
                         cell.checkerColor = false;
                     }
                 }
@@ -57,7 +58,6 @@ class Checkers extends React.Component {
         let turnArray = JSON.parse(JSON.stringify(this.props.fieldArray));
         let temp = 0;
         let attackCounter = 0;
-
         console.log('cell', turnArray[i][j]);
         //* Is checker controlled by active player
         if (this.props.playersTurn === turnArray[i][j].checkerColor) {
@@ -80,6 +80,7 @@ class Checkers extends React.Component {
             let tempRe = this.moveChecker(i, j, turnArray, attackCounter);
             turnArray = tempRe[0];
             attackCounter = tempRe[1];
+
             tempRe = this.findTurns(i, j, turnArray);
 
             turnArray = tempRe[0];
@@ -128,39 +129,79 @@ class Checkers extends React.Component {
                         checkerColor: turnArray[a][b].checkerColor,
                         color: false,
                     }
+                    if (turnArray[a][b].checkerType === 'whiteChecker' || turnArray[a][b].checkerType === 'blackChecker') {
+                        if (a - 2 === i && b - 2 === j) {
+                            if (turnArray[a - 1][b - 1].checkerColor !== turnArray[a][b].checkerColor) {
+                                clearCell.id = turnArray[a - 1][b - 1].id;
+                                turnArray[a - 1][b - 1] = clearCell;
+                                attackCounter = 1;
+                            }
+                        }
+                        if (a - 2 === i && b + 2 === j) {
+                            if (turnArray[a - 1][b + 1].checkerColor !== turnArray[a][b].checkerColor) {
+                                clearCell.id = turnArray[a - 1][b + 1].id;
+                                turnArray[a - 1][b + 1] = clearCell;
+                                attackCounter = 1;
+                            }
+                        }
+                        if (a + 2 === i && b - 2 === j) {
+                            if (turnArray[a + 1][b - 1].checkerColor !== turnArray[a][b].checkerColor) {
+                                clearCell.id = turnArray[a + 1][b - 1].id;
+                                turnArray[a + 1][b - 1] = clearCell;
+                                attackCounter = 1;
+
+                            }
+                        }
+                        if (a + 2 === i && b + 2 === j) {
+                            if (turnArray[a + 1][b + 1].checkerColor !== turnArray[a][b].checkerColor) {
+                                clearCell.id = turnArray[a + 1][b + 1].id;
+                                turnArray[a + 1][b + 1] = clearCell;
+                                attackCounter = 1;
+
+                            }
+                        }
+                    }
+                    else if (turnArray[a][b].checkerType === 'whiteQueen' || turnArray[a][b].checkerType === 'blackQueen') {
+                        let tempA = a;
+                        let tempB = b;
+
+                        if (i > a && j > b) {
+                            while (i > tempA && j > tempB) {
+                                clearCell.id = turnArray[tempA][tempB].id;
+                                turnArray[tempA][tempB] = clearCell;
+
+                                tempA++;
+                                tempB++;
+                            }
+
+                        }
+                        else if (i > a && j < b) {
+                            while (i > tempA && j < tempB) {
+                                clearCell.id = turnArray[tempA][tempB].id;
+                                turnArray[tempA][tempB] = clearCell;
+                                tempA++;
+                                tempB--;
+                            }
+                        }
+                        else if (i < a && j < b) {
+                            while (i < tempA && j < tempB) {
+                                clearCell.id = turnArray[tempA][tempB].id;
+                                turnArray[tempA][tempB] = clearCell;
+                                tempA--;
+                                tempB--;
+                            }
+                        }
+                        else if (i < a && j > b) {
+                            while (i < tempA && j > tempB) {
+                                clearCell.id = turnArray[tempA][tempB].id;
+                                turnArray[tempA][tempB] = clearCell;
+                                tempA--;
+                                tempB++;
+                            }
+                        }
+                    }
                     turnArray[i][j] = newCell;
                     turnArray[a][b] = clearCell;
-
-                    if (a - 2 === i && b - 2 === j) {
-                        if (turnArray[a - 1][b - 1].checkerColor !== turnArray[a][b].checkerColor) {
-                            clearCell.id = turnArray[a - 1][b - 1].id;
-                            turnArray[a - 1][b - 1] = clearCell;
-                            attackCounter = 1;
-                        }
-                    }
-                    if (a - 2 === i && b + 2 === j) {
-                        if (turnArray[a - 1][b + 1].checkerColor !== turnArray[a][b].checkerColor) {
-                            clearCell.id = turnArray[a - 1][b + 1].id;
-                            turnArray[a - 1][b + 1] = clearCell;
-                            attackCounter = 1;
-                        }
-                    }
-                    if (a + 2 === i && b - 2 === j) {
-                        if (turnArray[a + 1][b - 1].checkerColor !== turnArray[a][b].checkerColor) {
-                            clearCell.id = turnArray[a + 1][b - 1].id;
-                            turnArray[a + 1][b - 1] = clearCell;
-                            attackCounter = 1;
-
-                        }
-                    }
-                    if (a + 2 === i && b + 2 === j) {
-                        if (turnArray[a + 1][b + 1].checkerColor !== turnArray[a][b].checkerColor) {
-                            clearCell.id = turnArray[a + 1][b + 1].id;
-                            turnArray[a + 1][b + 1] = clearCell;
-                            attackCounter = 1;
-
-                        }
-                    }
                 }
                 turnArray[a][b].isChosen = 'no';
                 turnArray[a][b].isActive = false;
@@ -201,53 +242,72 @@ class Checkers extends React.Component {
                         let tempA = a;
                         let tempB = b;
 
-                        if (a < 6 && b > 1) {
-                            while (tempA < 6 && tempB > 1) {
-                                if (turnArray[tempA + 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB - 2].checkerType === 'clear') {
-                                    temp++;
-                                }
-                                tempA++;
-                                tempB--;
-                            }
-                        }
-                        if (a < 6 && b < 6) {
-                            while (tempA < 6 && tempB < 6) {
-                                if (turnArray[tempA + 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB + 2].checkerType === 'clear') {
-                                    temp++;
-                                }
-                                tempA++;
-                                tempB++;
-                            }
-                        }
+                        //* Left-top
                         if (a > 1 && b > 1) {
-                            while (tempA > 1 && tempB > 1) {
-                                if (turnArray[tempA - 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB - 2].checkerType === 'clear') {
-                                    temp++;
-                                }
+                            do {
+                                if (tempA !== a && tempB !== b)
+                                    if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
+                                if (turnArray[tempA - 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB - 2].checkerType === 'clear')
+                                    temp = 1;
+
                                 tempA--;
                                 tempB--;
-                            }
-
+                            } while (tempA > 1 && tempB > 1)
                         }
+                        //* Right-top
                         if (a > 1 && b < 6) {
-                            while (tempA > 1 && tempB < 6) {
-                                if (turnArray[tempA - 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB + 2].checkerType === 'clear') {
-                                    temp++;
-                                }
+                            tempA = a;
+                            tempB = b;
+                            do {
+                                if (tempA !== a && tempB !== b)
+                                    if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
+                                if (turnArray[tempA - 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB + 2].checkerType === 'clear')
+                                    temp = 1;
+
                                 tempA--;
                                 tempB++;
-                            }
-
+                            } while (tempA > 1 && tempB < 6)
                         }
+                        //* Right-bottom
+                        if (a < 6 && b < 6) {
+                            tempA = a;
+                            tempB = b;
+                            do {
+                                if (tempA !== a && tempB !== b)
+                                    if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
+                                if (turnArray[tempA + 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB + 2].checkerType === 'clear')
+                                    temp = 1;
+
+                                tempA++;
+                                tempB++;
+                            } while (tempA < 6 && tempB < 6)
+                        }
+                        //* Left-bottom
+                        if (a < 6 && b > 1) {
+                            tempA = a;
+                            tempB = b;
+                            do {
+                                if (tempA !== a && tempB !== b)
+                                    if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
+                                if (turnArray[tempA + 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB - 2].checkerType === 'clear')
+                                    temp = 1;
+
+                                tempA++;
+                                tempB--;
+                            } while (tempA < 6 && tempB > 1);
+                        }
+                        console.log(temp);
                     }
                 }
             }
         }
+
         if (turnArray[i][j].isChosen === 'no') {
             turnArray[i][j].isChosen = 'yes';
             turnArray[i][j].isActive = true;
             //* Check checker's owner
             if (turnArray[i][j].checkerColor === this.props.playersTurn) {
+
                 if (turnArray[i][j].checkerType === 'whiteChecker' || turnArray[i][j].checkerType === 'blackChecker') {
                     if (temp === 0) {
                         if (turnArray[i][j].checkerColor === false) {
@@ -306,34 +366,60 @@ class Checkers extends React.Component {
                     if (temp === 0) {
                         let tempI = i;
                         let tempJ = j;
+
                         while (tempI < 8 && tempJ >= 0) {
+                            ///
+                            if (tempI !== i && tempJ !== j) {
+                                if (turnArray[tempI][tempJ].checkerColor === this.props.playersTurn) {
+                                    break;
+                                }
+                            }
+                            ///
                             if (turnArray[tempI][tempJ].checkerType === 'clear') {
                                 turnArray[tempI][tempJ].isChosen = 'yes';
                             }
                             tempI++;
                             tempJ--;
                         }
+
                         tempI = i;
                         tempJ = j;
                         while (tempI < 8 && tempJ < 8) {
+                            if (tempI !== i && tempJ !== j) {
+                                if (turnArray[tempI][tempJ].checkerColor === this.props.playersTurn) {
+                                    break;
+                                }
+                            }
                             if (turnArray[tempI][tempJ].checkerType === 'clear') {
                                 turnArray[tempI][tempJ].isChosen = 'yes';
                             }
                             tempI++;
                             tempJ++;
                         }
+
                         tempI = i;
                         tempJ = j;
                         while (tempI >= 0 && tempJ >= 0) {
+                            if (tempI !== i && tempJ !== j) {
+                                if (turnArray[tempI][tempJ].checkerColor === this.props.playersTurn) {
+                                    break;
+                                }
+                            }
                             if (turnArray[tempI][tempJ].checkerType === 'clear') {
                                 turnArray[tempI][tempJ].isChosen = 'yes';
                             }
                             tempI--;
                             tempJ--;
                         }
+
                         tempI = i;
                         tempJ = j;
                         while (tempI >= 0 && tempJ < 8) {
+                            if (tempI !== i && tempJ !== j) {
+                                if (turnArray[tempI][tempJ].checkerColor === this.props.playersTurn) {
+                                    break;
+                                }
+                            }
                             if (turnArray[tempI][tempJ].checkerType === 'clear') {
                                 turnArray[tempI][tempJ].isChosen = 'yes';
                             }
@@ -342,50 +428,45 @@ class Checkers extends React.Component {
                         }
                     }
                     if (temp !== 0) {
-                        let a = i;
-                        let b = j;
-                        let tempA = a;
-                        let tempB = b;
+                        let tempI;
+                        let tempJ;
+                        //* Left-top
+                        if (i > 1 && j > 1) {
+                            tempI = i;
+                            tempJ = j;
+                            let enemyChecker = {}
 
-                        if (a < 6 && b > 1) {
-                            while (tempA < 6 && tempB > 1) {
-                                if (turnArray[tempA + 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB - 2].checkerType === 'clear') {
-                                    turnArray[tempA + 2][tempB - 2].isChosen = 'yes';
+                            do {
+                                if (tempI !== i && tempJ !== j) if (turnArray[tempI][tempJ].checkerColor === this.props.playersTurn) break;
+                                if (turnArray[tempI][tempJ].checkerColor === !this.props.playersTurn) {
+                                    enemyChecker.i = tempI;
+                                    enemyChecker.j = tempJ;
                                 }
-                                tempA++;
-                                tempB--;
-                            }
+                                tempI--;
+                                tempJ--;
+                            } while (tempI > 1 && tempJ > 1)
                         }
-                        if (a < 6 && b < 6) {
-                            while (tempA < 6 && tempB < 6) {
-                                if (turnArray[tempA + 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB + 2].checkerType === 'clear') {
-                                    turnArray[tempA + 2][tempB + 2].isChosen = 'yes';
-                                }
-                                tempA++;
-                                tempB++;
-                            }
-                        }
-                        if (a > 1 && b > 1) {
-                            while (tempA > 1 && tempB > 1) {
-                                if (turnArray[tempA - 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB - 2].checkerType === 'clear') {
-                                    turnArray[tempA - 2][tempB - 2].isChosen = 'yes';
-                                }
-                                tempA--;
-                                tempB--;
-                            }
+                        //* Right-top
+                        if (i > 1 && j < 6) {
+                            tempI = i;
+                            tempJ = j;
+
 
                         }
-                        if (a > 1 && b < 6) {
-                            while (tempA > 1 && tempB < 6) {
-                                if (turnArray[tempA - 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB + 2].checkerType === 'clear') {
-                                    turnArray[tempA - 2][tempB + 2].isChosen = 'yes';
-                                }
-                                tempA--;
-                                tempB++;
-                            }
+                        //* Right-bottom
+                        if (i < 6 && j < 6) {
+                            tempI = i;
+                            tempJ = j;
+
 
                         }
-                        ///
+                        //* Left-bottom
+                        if (i < 6 && j > 1) {
+                            tempI = i;
+                            tempJ = j;
+
+
+                        }
                     }
                 }
             }
