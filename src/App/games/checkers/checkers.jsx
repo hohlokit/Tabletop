@@ -71,22 +71,21 @@ class Checkers extends React.Component {
             }
             //* Cancel choose and finding available turns
             if (temp === 0) {
-                let tempReturn = this.findTurns(i, j, turnArray);
+                let tempReturn = this.findTurns(i, j, turnArray, attackCounter);
                 turnArray = tempReturn[0];
             }
         }
         //* Turn
         if (turnArray[i][j].isActive === false && turnArray[i][j].isChosen === 'yes') {
+            let canAttackCounter = 0;
             let tempRe = this.moveChecker(i, j, turnArray, attackCounter);
             turnArray = tempRe[0];
+            turnArray = this.becomeQueen(i, j, turnArray);
             attackCounter = tempRe[1];
-
-            tempRe = this.findTurns(i, j, turnArray);
-
+            tempRe = this.findTurns(i, j, turnArray, attackCounter);
             turnArray = tempRe[0];
-            let canAttackCounter = tempRe[1];
+            canAttackCounter = tempRe[1];
             if (attackCounter === 0 || canAttackCounter === 0) {
-                turnArray = this.becomeQueen(i, j, turnArray);
                 turnArray = this.clearChosenFields(turnArray);
             }
         }
@@ -94,7 +93,6 @@ class Checkers extends React.Component {
             turnArray = this.becomeQueen(i, j, turnArray);
             this.props.changeFieldArray(turnArray);
         }
-
     }
 
     clearChosenFields = (turnArray) => {
@@ -167,6 +165,7 @@ class Checkers extends React.Component {
 
                         if (i > a && j > b) {
                             while (i > tempA && j > tempB) {
+                                if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
                                 clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
 
@@ -177,6 +176,8 @@ class Checkers extends React.Component {
                         }
                         else if (i > a && j < b) {
                             while (i > tempA && j < tempB) {
+                                if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
+
                                 clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
                                 tempA++;
@@ -185,6 +186,8 @@ class Checkers extends React.Component {
                         }
                         else if (i < a && j < b) {
                             while (i < tempA && j < tempB) {
+                                if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
+
                                 clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
                                 tempA--;
@@ -193,6 +196,7 @@ class Checkers extends React.Component {
                         }
                         else if (i < a && j > b) {
                             while (i < tempA && j > tempB) {
+                                if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
                                 clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
                                 tempA--;
@@ -211,7 +215,7 @@ class Checkers extends React.Component {
         return [turnArray, attackCounter]
     }
 
-    findTurns = (i, j, turnArray) => {
+    findTurns = (i, j, turnArray, attackCounter) => {
         let temp = 0;
         for (let a = 0; a < 8; a++) {
             for (let b = 0; b < 8; b++) {
@@ -241,19 +245,24 @@ class Checkers extends React.Component {
                     else if (turnArray[a][b].checkerType === 'whiteQueen' || turnArray[a][b].checkerType === 'blackQueen') {
                         let tempA = a;
                         let tempB = b;
-
+                        let queenTemp = 0;
                         //* Left-top
                         if (a > 1 && b > 1) {
                             do {
                                 if (tempA !== a && tempB !== b)
                                     if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
-                                if (turnArray[tempA - 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB - 2].checkerType === 'clear')
+                                if (turnArray[tempA - 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB - 2].checkerType === 'clear') {
                                     temp = 1;
-
+                                    queenTemp = 1;
+                                }
                                 tempA--;
                                 tempB--;
                             } while (tempA > 1 && tempB > 1)
+                            if (queenTemp === 1) {
+                                turnArray[a][b].leftTop = true;
+                            }
                         }
+                        queenTemp = 0;
                         //* Right-top
                         if (a > 1 && b < 6) {
                             tempA = a;
@@ -261,13 +270,18 @@ class Checkers extends React.Component {
                             do {
                                 if (tempA !== a && tempB !== b)
                                     if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
-                                if (turnArray[tempA - 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB + 2].checkerType === 'clear')
+                                if (turnArray[tempA - 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB + 2].checkerType === 'clear') {
                                     temp = 1;
-
+                                    queenTemp = 1;
+                                }
                                 tempA--;
                                 tempB++;
                             } while (tempA > 1 && tempB < 6)
+                            if (queenTemp === 1) {
+                                turnArray[a][b].rightTop = true;
+                            }
                         }
+                        queenTemp = 0;
                         //* Right-bottom
                         if (a < 6 && b < 6) {
                             tempA = a;
@@ -275,13 +289,18 @@ class Checkers extends React.Component {
                             do {
                                 if (tempA !== a && tempB !== b)
                                     if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
-                                if (turnArray[tempA + 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB + 2].checkerType === 'clear')
+                                if (turnArray[tempA + 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB + 2].checkerType === 'clear') {
                                     temp = 1;
-
+                                    queenTemp = 1;
+                                }
                                 tempA++;
                                 tempB++;
                             } while (tempA < 6 && tempB < 6)
+                            if (queenTemp === 1) {
+                                turnArray[a][b].rightBottom = true;
+                            }
                         }
+                        queenTemp = 0;
                         //* Left-bottom
                         if (a < 6 && b > 1) {
                             tempA = a;
@@ -289,11 +308,16 @@ class Checkers extends React.Component {
                             do {
                                 if (tempA !== a && tempB !== b)
                                     if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
-                                if (turnArray[tempA + 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB - 2].checkerType === 'clear')
+                                if (turnArray[tempA + 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB - 2].checkerType === 'clear') {
                                     temp = 1;
-
+                                    queenTemp = 1;
+                                }
                                 tempA++;
                                 tempB--;
+                                if (queenTemp === 1) {
+                                    turnArray[a][b].leftBottom = true;
+                                }
+
                             } while (tempA < 6 && tempB > 1);
                         }
                         console.log(temp);
@@ -301,13 +325,11 @@ class Checkers extends React.Component {
                 }
             }
         }
-
         if (turnArray[i][j].isChosen === 'no') {
             turnArray[i][j].isChosen = 'yes';
             turnArray[i][j].isActive = true;
             //* Check checker's owner
             if (turnArray[i][j].checkerColor === this.props.playersTurn) {
-
                 if (turnArray[i][j].checkerType === 'whiteChecker' || turnArray[i][j].checkerType === 'blackChecker') {
                     if (temp === 0) {
                         if (turnArray[i][j].checkerColor === false) {
@@ -366,7 +388,6 @@ class Checkers extends React.Component {
                     if (temp === 0) {
                         let tempI = i;
                         let tempJ = j;
-
                         while (tempI < 8 && tempJ >= 0) {
                             ///
                             if (tempI !== i && tempJ !== j) {
@@ -427,45 +448,94 @@ class Checkers extends React.Component {
                             tempJ++;
                         }
                     }
-                    if (temp !== 0) {
-                        let tempI;
-                        let tempJ;
-                        //* Left-top
-                        if (i > 1 && j > 1) {
-                            tempI = i;
-                            tempJ = j;
-                            let enemyChecker = {}
-
-                            do {
+                    else if (temp !== 0) {
+                        let tempI = i;
+                        let tempJ = j;
+                        let enemy = {
+                            i: false,
+                            j: false,
+                        };
+                        //Right bottom
+                        if (i < 6 && j < 6 && turnArray[i][j].rightBottom === true) {
+                            while (tempI < 8 && tempJ < 8) {
                                 if (tempI !== i && tempJ !== j) if (turnArray[tempI][tempJ].checkerColor === this.props.playersTurn) break;
                                 if (turnArray[tempI][tempJ].checkerColor === !this.props.playersTurn) {
-                                    enemyChecker.i = tempI;
-                                    enemyChecker.j = tempJ;
+                                    enemy.i = tempI;
+                                    enemy.j = tempJ;
+                                }
+                                if (enemy.i < tempI && enemy.j < tempJ) {
+                                    if (turnArray[tempI][tempJ].checkerType === !this.props.playersTurn || turnArray[tempI][tempJ].checkerType === this.props.playersTurn) break;
+                                    if (turnArray[tempI][tempJ].checkerType === 'clear') turnArray[tempI][tempJ].isChosen = 'yes';
+                                }
+                                tempI++;
+                                tempJ++;
+                            }
+                        }
+                        tempI = i;
+                        tempJ = j;
+                        enemy = {
+                            i: false,
+                            j: false,
+                        };
+                        //Left bottom
+                        if (i < 6 && j > 1 && turnArray[i][j].leftBottom === true) {
+                            while (tempI < 8 && tempJ >= 0) {
+                                if (tempI !== i && tempJ !== j) if (turnArray[tempI][tempJ].checkerColor === this.props.playersTurn) break;
+                                if (turnArray[tempI][tempJ].checkerColor === !this.props.playersTurn) {
+                                    enemy.i = tempI;
+                                    enemy.j = tempJ;
+                                }
+                                if (enemy.i < tempI && enemy.j > tempJ) {
+                                    if (turnArray[tempI][tempJ].checkerType === !this.props.playersTurn || turnArray[tempI][tempJ].checkerType === this.props.playersTurn) break;
+                                    if (turnArray[tempI][tempJ].checkerType === 'clear') turnArray[tempI][tempJ].isChosen = 'yes';
+                                }
+                                tempI++;
+                                tempJ--;
+                            }
+                        }
+                        tempI = i;
+                        tempJ = j;
+                        enemy = {
+                            i: false,
+                            j: false,
+                        };
+
+                        if (i > 1 && j > 1 && turnArray[i][j].leftTop === true) {
+                            while (tempI >= 0 && tempJ >= 0) {
+                                if (tempI !== i && tempJ !== j) if (turnArray[tempI][tempJ].checkerColor === this.props.playersTurn) break;
+                                if (turnArray[tempI][tempJ].checkerColor === !this.props.playersTurn) {
+                                    enemy.i = tempI;
+                                    enemy.j = tempJ;
+                                }
+                                if (enemy.i > tempI && enemy.j > tempJ) {
+                                    if (turnArray[tempI][tempJ].checkerType === !this.props.playersTurn || turnArray[tempI][tempJ].checkerType === this.props.playersTurn) break;                                    
+                                    if (turnArray[tempI][tempJ].checkerType === 'clear') turnArray[tempI][tempJ].isChosen = 'yes';
                                 }
                                 tempI--;
                                 tempJ--;
-                            } while (tempI > 1 && tempJ > 1)
+                            }
                         }
-                        //* Right-top
-                        if (i > 1 && j < 6) {
-                            tempI = i;
-                            tempJ = j;
+                        tempI = i;
+                        tempJ = j;
+                        enemy = {
+                            i: false,
+                            j: false,
+                        };
 
-
-                        }
-                        //* Right-bottom
-                        if (i < 6 && j < 6) {
-                            tempI = i;
-                            tempJ = j;
-
-
-                        }
-                        //* Left-bottom
-                        if (i < 6 && j > 1) {
-                            tempI = i;
-                            tempJ = j;
-
-
+                        if (i > 1 && j < 6 && turnArray[i][j].rightTop === true) {
+                            while (tempI >= 0 && tempJ < 8) {
+                                if (tempI !== i && tempJ !== j) if (turnArray[tempI][tempJ].checkerColor === this.props.playersTurn) break;
+                                if (turnArray[tempI][tempJ].checkerColor === !this.props.playersTurn) {
+                                    enemy.i = tempI;
+                                    enemy.j = tempJ;
+                                }
+                                if (enemy.i > tempI && enemy.j < tempJ) {
+                                    if (turnArray[tempI][tempJ].checkerType === !this.props.playersTurn || turnArray[tempI][tempJ].checkerType === this.props.playersTurn) break;                                    
+                                    if (turnArray[tempI][tempJ].checkerType === 'clear') turnArray[tempI][tempJ].isChosen = 'yes';
+                                }
+                                tempI--;
+                                tempJ++;
+                            }
                         }
                     }
                 }
@@ -480,6 +550,7 @@ class Checkers extends React.Component {
                 }
             }
         }
+
         return [turnArray, temp];
     }
 
