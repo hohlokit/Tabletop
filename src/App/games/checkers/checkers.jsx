@@ -26,11 +26,11 @@ class Checkers extends React.Component {
                 else {
                     cell.color = false;
                     if (i < 3) {
-                        cell.checkerType = 'blackQueen';
+                        cell.checkerType = 'blackChecker';
                         cell.checkerColor = true;
                     }
                     if (i > 4) {
-                        cell.checkerType = 'whiteQueen';
+                        cell.checkerType = 'whiteChecker';
                         cell.checkerColor = false;
                     }
                 }
@@ -77,6 +77,7 @@ class Checkers extends React.Component {
         }
         //* Turn
         if (turnArray[i][j].isActive === false && turnArray[i][j].isChosen === 'yes') {
+
             let canAttackCounter = 0;
             let tempRe = this.moveChecker(i, j, turnArray, attackCounter);
             turnArray = tempRe[0];
@@ -162,22 +163,18 @@ class Checkers extends React.Component {
                     else if (turnArray[a][b].checkerType === 'whiteQueen' || turnArray[a][b].checkerType === 'blackQueen') {
                         let tempA = a;
                         let tempB = b;
-
                         if (i > a && j > b) {
                             while (i > tempA && j > tempB) {
                                 if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
                                 clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
-
                                 tempA++;
                                 tempB++;
                             }
-
                         }
                         else if (i > a && j < b) {
                             while (i > tempA && j < tempB) {
                                 if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
-
                                 clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
                                 tempA++;
@@ -187,7 +184,6 @@ class Checkers extends React.Component {
                         else if (i < a && j < b) {
                             while (i < tempA && j < tempB) {
                                 if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
-
                                 clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
                                 tempA--;
@@ -216,12 +212,13 @@ class Checkers extends React.Component {
     }
 
     findTurns = (i, j, turnArray, attackCounter) => {
+
         let temp = 0;
         for (let a = 0; a < 8; a++) {
             for (let b = 0; b < 8; b++) {
                 if (turnArray[a][b].checkerColor === this.props.playersTurn) {
                     if (turnArray[a][b].checkerType === 'whiteChecker' || turnArray[a][b].checkerType === 'blackChecker') {
-                        if (a < 6 && b >= 2) {
+                        if (a < 6 && b > 1) {
                             if (turnArray[a + 1][b - 1].checkerColor === !this.props.playersTurn && turnArray[a + 2][b - 2].checkerType === 'clear') {
                                 temp++;
                             }
@@ -251,6 +248,8 @@ class Checkers extends React.Component {
                             do {
                                 if (tempA !== a && tempB !== b)
                                     if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
+                                if (turnArray[tempA - 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB - 2].checkerColor === !this.props.playersTurn) break;
+                                if (turnArray[tempA - 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB - 2].checkerColor === this.props.playersTurn) break;
                                 if (turnArray[tempA - 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB - 2].checkerType === 'clear') {
                                     temp = 1;
                                     queenTemp = 1;
@@ -270,6 +269,8 @@ class Checkers extends React.Component {
                             do {
                                 if (tempA !== a && tempB !== b)
                                     if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
+                                if (turnArray[tempA - 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB + 2].checkerColor === !this.props.playersTurn) break;
+
                                 if (turnArray[tempA - 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA - 2][tempB + 2].checkerType === 'clear') {
                                     temp = 1;
                                     queenTemp = 1;
@@ -289,6 +290,8 @@ class Checkers extends React.Component {
                             do {
                                 if (tempA !== a && tempB !== b)
                                     if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
+                                if (turnArray[tempA + 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB + 2].checkerColor === !this.props.playersTurn) break;
+
                                 if (turnArray[tempA + 1][tempB + 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB + 2].checkerType === 'clear') {
                                     temp = 1;
                                     queenTemp = 1;
@@ -306,8 +309,8 @@ class Checkers extends React.Component {
                             tempA = a;
                             tempB = b;
                             do {
-                                if (tempA !== a && tempB !== b)
-                                    if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
+                                if (tempA !== a && tempB !== b) if (turnArray[tempA][tempB].checkerColor === turnArray[a][b].checkerColor) break;
+                                if (turnArray[tempA + 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB - 2].checkerColor === !this.props.playersTurn) break;
                                 if (turnArray[tempA + 1][tempB - 1].checkerColor === !this.props.playersTurn && turnArray[tempA + 2][tempB - 2].checkerType === 'clear') {
                                     temp = 1;
                                     queenTemp = 1;
@@ -317,19 +320,20 @@ class Checkers extends React.Component {
                                 if (queenTemp === 1) {
                                     turnArray[a][b].leftBottom = true;
                                 }
-
                             } while (tempA < 6 && tempB > 1);
                         }
-                        console.log(temp);
+
                     }
                 }
             }
         }
+
         if (turnArray[i][j].isChosen === 'no') {
             turnArray[i][j].isChosen = 'yes';
             turnArray[i][j].isActive = true;
             //* Check checker's owner
             if (turnArray[i][j].checkerColor === this.props.playersTurn) {
+
                 if (turnArray[i][j].checkerType === 'whiteChecker' || turnArray[i][j].checkerType === 'blackChecker') {
                     if (temp === 0) {
                         if (turnArray[i][j].checkerColor === false) {
@@ -385,6 +389,7 @@ class Checkers extends React.Component {
                     }
                 }
                 else if (turnArray[i][j].checkerType === 'whiteQueen' || turnArray[i][j].checkerType === 'blackQueen') {
+
                     if (temp === 0) {
                         let tempI = i;
                         let tempJ = j;
@@ -452,12 +457,14 @@ class Checkers extends React.Component {
                         let tempI = i;
                         let tempJ = j;
                         let enemy = {
-                            i: false,
-                            j: false,
+                            i: 'pes',
+                            j: 'pes',
                         };
+
                         //Right bottom
                         if (i < 6 && j < 6 && turnArray[i][j].rightBottom === true) {
                             while (tempI < 8 && tempJ < 8) {
+                                console.log('Right bottom', turnArray[tempI][tempJ])
                                 if (tempI !== i && tempJ !== j) if (turnArray[tempI][tempJ].checkerColor === this.props.playersTurn) break;
                                 if (turnArray[tempI][tempJ].checkerColor === !this.props.playersTurn) {
                                     enemy.i = tempI;
@@ -474,8 +481,8 @@ class Checkers extends React.Component {
                         tempI = i;
                         tempJ = j;
                         enemy = {
-                            i: false,
-                            j: false,
+                            i: 'pes',
+                            j: 'pes',
                         };
                         //Left bottom
                         if (i < 6 && j > 1 && turnArray[i][j].leftBottom === true) {
@@ -496,8 +503,8 @@ class Checkers extends React.Component {
                         tempI = i;
                         tempJ = j;
                         enemy = {
-                            i: false,
-                            j: false,
+                            i: 'pes',
+                            j: 'pes',
                         };
 
                         if (i > 1 && j > 1 && turnArray[i][j].leftTop === true) {
@@ -508,7 +515,7 @@ class Checkers extends React.Component {
                                     enemy.j = tempJ;
                                 }
                                 if (enemy.i > tempI && enemy.j > tempJ) {
-                                    if (turnArray[tempI][tempJ].checkerType === !this.props.playersTurn || turnArray[tempI][tempJ].checkerType === this.props.playersTurn) break;                                    
+                                    if (turnArray[tempI][tempJ].checkerType === !this.props.playersTurn || turnArray[tempI][tempJ].checkerType === this.props.playersTurn) break;
                                     if (turnArray[tempI][tempJ].checkerType === 'clear') turnArray[tempI][tempJ].isChosen = 'yes';
                                 }
                                 tempI--;
@@ -518,8 +525,8 @@ class Checkers extends React.Component {
                         tempI = i;
                         tempJ = j;
                         enemy = {
-                            i: false,
-                            j: false,
+                            i: 'pes',
+                            j: 'pes',
                         };
 
                         if (i > 1 && j < 6 && turnArray[i][j].rightTop === true) {
@@ -530,7 +537,7 @@ class Checkers extends React.Component {
                                     enemy.j = tempJ;
                                 }
                                 if (enemy.i > tempI && enemy.j < tempJ) {
-                                    if (turnArray[tempI][tempJ].checkerType === !this.props.playersTurn || turnArray[tempI][tempJ].checkerType === this.props.playersTurn) break;                                    
+                                    if (turnArray[tempI][tempJ].checkerType === !this.props.playersTurn || turnArray[tempI][tempJ].checkerType === this.props.playersTurn) break;
                                     if (turnArray[tempI][tempJ].checkerType === 'clear') turnArray[tempI][tempJ].isChosen = 'yes';
                                 }
                                 tempI--;
@@ -578,7 +585,7 @@ class Checkers extends React.Component {
                                             {v1.map((v2, j) => (
                                                 <td
                                                     key={v2.id}
-                                                    className={this.props.fieldArray[i][j].color ? 'white' : 'black ' + this.props.fieldArray[i][j].isChosen + ' ' + this.props.fieldArray[i][j].checkerType}
+                                                    className={this.props.fieldArray[i][j].color ? 'white' : 'black ' + this.props.fieldArray[i][j].isChosen + ' ' + this.props.fieldArray[i][j].checkerType + ' ' + this.props.fieldArray[i][j].id}
                                                     onClick={() => this.chooseCell(i, j)}
                                                 />
                                             ))}
