@@ -14,6 +14,7 @@ body {
 h1 {
     display: flex;
     justify-content: center;
+    font-size: 3.5vw;
 }
 
 #root {
@@ -27,13 +28,15 @@ h1 {
 }
 
 .indexation {
-    height: 51px;
-    width: 51px;
+    height: 3.7vw;
+    width: 3.7vw;
+    margin-bottom: 1px;
+    margin-left: 1px;
     background-color: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2vw;
+    font-size: 3.7vw;
 }
 
 .leftNum {
@@ -49,14 +52,14 @@ h1 {
 
 .black {
     background-color: #545353;
-    height: 50px;
-    width: 50px;
+    height: 3.7vw;
+    width: 3.7vw;
 }
 
 .white {
     background-color: #ffffff;
-    height: 50px;
-    width: 50px;
+    height: 3.7vw;
+    width: 3.7vw;
 }
 
 .blackChecker {
@@ -78,4 +81,21 @@ h1 {
 .yes {
     outline: 5px solid rgb(255, 0, 0);
     outline-offset: -5px;
+}
+
+.UI {
+    margin-left: 1vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    margin-bottom: 1vw;
+}
+
+.UIButton {
+    margin-left: 0.5vw;
+    width: calc(100vw - 95vw)*100%;
+    height: calc(100vw - 92vw)*100%;
+    border-radius: 12px;
+    font-size: 1.5vw;
 }

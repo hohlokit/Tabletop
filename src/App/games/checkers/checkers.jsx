@@ -41,8 +41,8 @@ class Checkers extends React.Component {
         this.props.changeFieldArray(fieldArr);
     }
 
-    // TODO1: queens
-    // TODO2: history
+    // TODO1: history
+    // TODO2: bug with field
 
     becomeQueen = (i, j, turnArray) => {
         if (turnArray[i][j].checkerType === 'blackChecker' && i === 7) {
@@ -94,6 +94,24 @@ class Checkers extends React.Component {
             turnArray = this.becomeQueen(i, j, turnArray);
             this.props.changeFieldArray(turnArray);
         }
+        this.countWin();
+    }
+
+    countWin = () => {
+        let turnArray = JSON.parse(JSON.stringify(this.props.fieldArray));
+        let counter = {
+            white: 0,
+            black: 0
+        };
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                if (turnArray[i][j].checkerColor === false) counter.white++;
+                if (turnArray[i][j].checkerColor === true) counter.black++;
+            }
+        }
+        this.props.changeCheckersCount(counter);
+        if (counter.white === 0) alert("Black player win");
+        if (counter.black === 0) alert("White player win");
     }
 
     clearChosenFields = (turnArray) => {
@@ -211,8 +229,7 @@ class Checkers extends React.Component {
         return [turnArray, attackCounter]
     }
 
-    findTurns = (i, j, turnArray, attackCounter) => {
-
+    findTurns = (i, j, turnArray) => {
         let temp = 0;
         for (let a = 0; a < 8; a++) {
             for (let b = 0; b < 8; b++) {
@@ -565,6 +582,10 @@ class Checkers extends React.Component {
         return (
             <div>
                 <h1>Checkers</h1>
+                <div className="UI">
+                    <button className="UIButton" onClick={this.toChess}>Chess</button>
+                    <button className="UIButton">History  </button>
+                </div>
                 <div className="leftNum">
                     <div>
                         <div className="indexation">8</div>
@@ -615,6 +636,7 @@ export default connect(
     state => ({
         fieldArray: state.fieldArray,
         playersTurn: state.playersTurn,
+        checkersCount: state.checkersCount,
     }),
     dispatch => ({
         changeFieldArray: (fieldArray) => {
@@ -623,6 +645,8 @@ export default connect(
         changePlayersTurn: (playersTurn) => {
             dispatch({ type: 'CHANGE_PLAYERS_TURN', payload: playersTurn });
         },
-
+        changeCheckersCount: (checkersCount) => {
+            dispatch({ type: 'CHANGE_CHECKERS_COUNT', payload: checkersCount });
+        }
     })
 )(Checkers);
