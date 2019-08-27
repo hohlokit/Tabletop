@@ -39,6 +39,12 @@ class Checkers extends React.Component {
             fieldArr.push(fieldRow);
         }
         this.props.changeFieldArray(fieldArr);
+        this.props.changePlayersTurn(false);
+        let counter = {
+            black: 12,
+            white: 12
+        }
+        this.props.changeCheckersCount(counter);
     }
 
     // TODO1: history
@@ -578,6 +584,10 @@ class Checkers extends React.Component {
         return [turnArray, temp];
     }
 
+    restart = () => {
+        this.createField();
+    }
+
     render() {
         return (
             <div>
@@ -585,6 +595,7 @@ class Checkers extends React.Component {
                 <div className="UI">
                     <button className="UIButton" onClick={this.toChess}>Chess</button>
                     <button className="UIButton">History  </button>
+                    <button className="UIButton" onClick={this.restart}>Restart</button>
                 </div>
                 <div className="leftNum">
                     <div>
