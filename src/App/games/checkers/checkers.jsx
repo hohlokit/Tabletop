@@ -163,7 +163,7 @@ class Checkers extends React.Component {
             for (let b = 0; b < 8; b++) {
                 if (turnArray[a][b].isActive === true) {
                     let clearCell = {
-                        id: turnArray[a][b].id,
+                        id: turnArray[i][j].id,
                         isChosen: 'no',
                         isActive: false,
                         checkerType: 'clear',
@@ -171,7 +171,7 @@ class Checkers extends React.Component {
                         color: false,
                     }
                     let newCell = {
-                        id: turnArray[i][j].id,
+                        id: turnArray[a][b].id,
                         isChosen: 'no',
                         isActive: false,
                         checkerType: turnArray[a][b].checkerType,
