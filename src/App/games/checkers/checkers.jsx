@@ -1,12 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+
 class Checkers extends React.Component {
     componentWillMount() {
         this.createField();
     }
-    createField = () => {
 
+    historyChangeTurn = (i) => {
+        let tempHistory = JSON.parse(JSON.stringify(this.props.historyArr));
+        console.log('full', tempHistory)
+        let tempArr = tempHistory[i].arr;
+        console.log('arr', tempArr)
+        let tempTurn = tempHistory[i].turn;
+        console.log('turn', tempTurn)
+        this.props.changeFieldArray(tempArr);
+        this.props.changePlayersTurn(tempTurn);
+
+        let tempCopy = tempHistory.slice(0, i + 1);
+        this.props.changeHistoryArr(tempCopy);
+    }
+    createField = () => {
         let fieldRow = [];
         let fieldArr = [];
         let id = 1;
@@ -45,9 +59,14 @@ class Checkers extends React.Component {
             white: 12
         }
         this.props.changeCheckersCount(counter);
+        let obj = [{
+            arr: fieldArr,
+            turn: false
+        }]
+        this.props.changeHistoryArr(obj);
     }
 
-    // TODO1: history
+    // TODO1: AI
     // TODO2: bug with field
 
     becomeQueen = (i, j, turnArray) => {
@@ -128,6 +147,13 @@ class Checkers extends React.Component {
             }
         }
         this.props.changePlayersTurn(!this.props.playersTurn);
+        let mas = {
+            arr: turnArray,
+            turn: this.props.playersTurn
+        }
+        let temp = JSON.parse(JSON.stringify(this.props.historyArr));
+        temp.push(mas);
+        this.props.changeHistoryArr(temp);
 
         return turnArray;
     }
@@ -588,13 +614,14 @@ class Checkers extends React.Component {
         this.createField();
     }
 
+
+
     render() {
         return (
             <div>
                 <h1>Checkers</h1>
                 <div className="UI">
-                    <button className="UIButton" onClick={this.toChess}>Chess</button>
-                    <button className="UIButton">History  </button>
+                    {  /*        <button className="UIButton" onClick={this.toChess}>Chess</button> */}
                     <button className="UIButton" onClick={this.restart}>Restart</button>
                 </div>
                 <div className="leftNum">
@@ -637,6 +664,14 @@ class Checkers extends React.Component {
                             <div className="indexation">H</div>
                         </div>
                     </div>
+                    <div className="historyBlock">
+                        <h1 className="historyName">History</h1>
+                        <div className="turns">
+                            {this.props.historyArr.map((z1, i) =>
+                                <button onClick={() => this.historyChangeTurn(i)} className="oneTurn">{z1.innerHTML = i}</button>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
         )
@@ -648,6 +683,7 @@ export default connect(
         fieldArray: state.fieldArray,
         playersTurn: state.playersTurn,
         checkersCount: state.checkersCount,
+        historyArr: state.historyArr
     }),
     dispatch => ({
         changeFieldArray: (fieldArray) => {
@@ -658,6 +694,9 @@ export default connect(
         },
         changeCheckersCount: (checkersCount) => {
             dispatch({ type: 'CHANGE_CHECKERS_COUNT', payload: checkersCount });
+        },
+        changeHistoryArr: (historyArr) => {
+            dispatch({ type: 'CHANGE_HISTORY_ARR', payload: historyArr });
         }
     })
 )(Checkers);
