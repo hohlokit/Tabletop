@@ -23,12 +23,12 @@ class Checkers extends React.Component {
     createField = () => {
         let fieldRow = [];
         let fieldArr = [];
-        let id = 1;
+
         for (let i = 0; i < 8; i++) {
             fieldRow = [];
             for (let j = 0; j < 8; j++) {
                 let cell = {
-                    id: id++,
+
                     isChosen: 'no',
                     isActive: false,
                     checkerType: 'clear',
@@ -163,7 +163,6 @@ class Checkers extends React.Component {
             for (let b = 0; b < 8; b++) {
                 if (turnArray[a][b].isActive === true) {
                     let clearCell = {
-                        id: turnArray[i][j].id,
                         isChosen: 'no',
                         isActive: false,
                         checkerType: 'clear',
@@ -171,7 +170,6 @@ class Checkers extends React.Component {
                         color: false,
                     }
                     let newCell = {
-                        id: turnArray[a][b].id,
                         isChosen: 'no',
                         isActive: false,
                         checkerType: turnArray[a][b].checkerType,
@@ -181,21 +179,18 @@ class Checkers extends React.Component {
                     if (turnArray[a][b].checkerType === 'whiteChecker' || turnArray[a][b].checkerType === 'blackChecker') {
                         if (a - 2 === i && b - 2 === j) {
                             if (turnArray[a - 1][b - 1].checkerColor !== turnArray[a][b].checkerColor) {
-                                clearCell.id = turnArray[a - 1][b - 1].id;
                                 turnArray[a - 1][b - 1] = clearCell;
                                 attackCounter = 1;
                             }
                         }
                         if (a - 2 === i && b + 2 === j) {
                             if (turnArray[a - 1][b + 1].checkerColor !== turnArray[a][b].checkerColor) {
-                                clearCell.id = turnArray[a - 1][b + 1].id;
                                 turnArray[a - 1][b + 1] = clearCell;
                                 attackCounter = 1;
                             }
                         }
                         if (a + 2 === i && b - 2 === j) {
                             if (turnArray[a + 1][b - 1].checkerColor !== turnArray[a][b].checkerColor) {
-                                clearCell.id = turnArray[a + 1][b - 1].id;
                                 turnArray[a + 1][b - 1] = clearCell;
                                 attackCounter = 1;
 
@@ -203,7 +198,6 @@ class Checkers extends React.Component {
                         }
                         if (a + 2 === i && b + 2 === j) {
                             if (turnArray[a + 1][b + 1].checkerColor !== turnArray[a][b].checkerColor) {
-                                clearCell.id = turnArray[a + 1][b + 1].id;
                                 turnArray[a + 1][b + 1] = clearCell;
                                 attackCounter = 1;
 
@@ -216,7 +210,6 @@ class Checkers extends React.Component {
                         if (i > a && j > b) {
                             while (i > tempA && j > tempB) {
                                 if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
-                                clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
                                 tempA++;
                                 tempB++;
@@ -225,7 +218,6 @@ class Checkers extends React.Component {
                         else if (i > a && j < b) {
                             while (i > tempA && j < tempB) {
                                 if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
-                                clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
                                 tempA++;
                                 tempB--;
@@ -234,7 +226,6 @@ class Checkers extends React.Component {
                         else if (i < a && j < b) {
                             while (i < tempA && j < tempB) {
                                 if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
-                                clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
                                 tempA--;
                                 tempB--;
@@ -243,7 +234,6 @@ class Checkers extends React.Component {
                         else if (i < a && j > b) {
                             while (i < tempA && j > tempB) {
                                 if (turnArray[tempA][tempB].checkerColor === !this.props.playersTurn) attackCounter = 1;
-                                clearCell.id = turnArray[tempA][tempB].id;
                                 turnArray[tempA][tempB] = clearCell;
                                 tempA--;
                                 tempB++;
@@ -643,8 +633,7 @@ class Checkers extends React.Component {
                                         <tr className="row">
                                             {v1.map((v2, j) => (
                                                 <td
-                                                    key={v2.id}
-                                                    className={this.props.fieldArray[i][j].color ? 'white' : 'black ' + this.props.fieldArray[i][j].isChosen + ' ' + this.props.fieldArray[i][j].checkerType + ' ' + this.props.fieldArray[i][j].id}
+                                                    className={this.props.fieldArray[i][j].color ? 'white' : 'black ' + this.props.fieldArray[i][j].isChosen + ' ' + this.props.fieldArray[i][j].checkerType}
                                                     onClick={() => this.chooseCell(i, j)}
                                                 />
                                             ))}
